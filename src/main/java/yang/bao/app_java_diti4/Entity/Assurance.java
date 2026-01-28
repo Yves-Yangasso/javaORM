@@ -19,6 +19,10 @@ public  class  Assurance {
 
     protected double montant;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "type_assurance_id", nullable = false)
+    protected TypeAssurance typeAssurance;
+
     private static int compteur = 0;
 
     public Assurance() {
@@ -89,5 +93,13 @@ public  class  Assurance {
 
     public void setNumero(String numero) {
         this.numero = numero;
+    }
+
+    public TypeAssurance getTypeAssurance() {
+        return typeAssurance;
+    }
+
+    public void setTypeAssurance(TypeAssurance typeAssurance) {
+        this.typeAssurance = typeAssurance;
     }
 }
