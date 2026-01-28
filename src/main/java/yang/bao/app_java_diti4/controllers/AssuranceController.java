@@ -5,16 +5,21 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
+import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import yang.bao.app_java_diti4.Entity.Assurance;
 import yang.bao.app_java_diti4.Entity.TypeAssurance;
 import yang.bao.app_java_diti4.repository.AssuranceRepository;
 import yang.bao.app_java_diti4.repository.TypeAssuranceRepository;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -54,6 +59,8 @@ public class AssuranceController implements Initializable {
     private Button btnEffacer;
     @FXML
     private Button btnActualiser;
+    @FXML
+    private Button btnType;
 
     private AssuranceRepository assuranceRepository;
     private TypeAssuranceRepository typeAssuranceRepository;
@@ -292,4 +299,32 @@ public class AssuranceController implements Initializable {
         }
         return true;
     }
+
+
+    @FXML
+    void ouvrirTypeAssurance() {
+        try {
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/yang/bao/app_java_diti4/type_assurance.fxml"));
+
+            if (loader.getLocation() == null) {
+                throw new IOException("Fichier FXML introuvable : /yang/bao/app_java_diti4/type_assurance.fxml");
+            }
+
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Gestion des Types d'Assurance");
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText("Impossible d'ouvrir la page Type Assurance");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+        }
+    }
+
 }

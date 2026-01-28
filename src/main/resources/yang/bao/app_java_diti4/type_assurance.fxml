@@ -61,7 +61,7 @@
         </VBox>
 
         <!-- Table -->
-        <TableView fx:id="tableType"
+        <TableView fx:id="tableTypeAssurance"
                    layoutX="20"
                    layoutY="160"
                    prefWidth="410"
