@@ -11,7 +11,7 @@ public  class  Assurance {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected int id;
 
-    @Column(name = "number")
+    @Column(name = "numero")
     protected String numero;
 
 
