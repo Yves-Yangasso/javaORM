@@ -1,6 +1,7 @@
 package yang.bao.app_java_diti4.repository;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import yang.bao.app_java_diti4.Entity.Assurance;
 import yang.bao.app_java_diti4.repository.interfaceRepo.IInterface;
 
@@ -12,7 +13,10 @@ public class AssuranceRepository implements IInterface<Assurance> {
     private EntityManager entityManager;
 
     public AssuranceRepository() {
-        this.entityManager = yang.bao.app_java_diti4.utils.JpaUtil.getEntityManagerFactory().createEntityManager();
+        this.entityManager =
+                yang.bao.app_java_diti4.utils.JpaUtil
+                        .getEntityManagerFactory()
+                        .createEntityManager();
     }
 
     // Singleton
@@ -29,28 +33,55 @@ public class AssuranceRepository implements IInterface<Assurance> {
 
     @Override
     public void insert(Assurance assurance) {
-        if (!entityManager.getTransaction().isActive()) {
-            entityManager.getTransaction().begin();
+        EntityTransaction tx = entityManager.getTransaction();
+        try {
+            if (!tx.isActive()) {
+                tx.begin();
+            }
+            entityManager.persist(assurance);
+            tx.commit();
+        } catch (Exception e) {
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+            throw e;
         }
-        entityManager.persist(assurance);
-        entityManager.getTransaction().commit();
     }
-
 
     @Override
     public void update(Assurance assurance) {
-        entityManager.getTransaction().begin(); // démarrage une transaction
-        entityManager.merge(assurance);         // update
-        entityManager.getTransaction().commit(); // persister la transaction
+        EntityTransaction tx = entityManager.getTransaction();
+        try {
+            if (!tx.isActive()) {
+                tx.begin();
+            }
+            entityManager.merge(assurance);
+            tx.commit();
+        } catch (Exception e) {
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+            throw e;
+        }
     }
 
     @Override
     public void delete(int id) {
         Assurance assurance = findById(id);
-        if (assurance != null) {
-            entityManager.getTransaction().begin(); // démarrage une transaction
-            entityManager.remove(assurance);       // delete
-            entityManager.getTransaction().commit(); // persister la transaction
+        if (assurance == null) return;
+
+        EntityTransaction tx = entityManager.getTransaction();
+        try {
+            if (!tx.isActive()) {
+                tx.begin();
+            }
+            entityManager.remove(assurance);
+            tx.commit();
+        } catch (Exception e) {
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+            throw e;
         }
     }
 
@@ -61,6 +92,8 @@ public class AssuranceRepository implements IInterface<Assurance> {
 
     @Override
     public List<Assurance> findAll() {
-        return entityManager.createQuery("SELECT a FROM Assurance a", Assurance.class).getResultList();
+        return entityManager
+                .createQuery("SELECT a FROM Assurance a", Assurance.class)
+                .getResultList();
     }
 }

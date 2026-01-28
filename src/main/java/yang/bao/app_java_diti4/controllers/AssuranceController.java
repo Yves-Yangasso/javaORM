@@ -179,28 +179,63 @@ public class AssuranceController implements Initializable {
 
     @FXML
     void handleAjouter(ActionEvent event) {
-        if (validateFields()) {
-            Assurance assurance = new Assurance(tfNomClient.getText().trim(), Double.parseDouble(tfMontant.getText().trim()));
+        // Validation simple
+        if (tfNomClient.getText() == null || tfNomClient.getText().trim().isEmpty() ||
+                tfMontant.getText() == null || tfMontant.getText().trim().isEmpty() ||
+                cbTypeAssurance.getValue() == null) {
+            System.out.println("Tous les champs sont obligatoires !");
+            return;
+        }
+
+        try {
+            String nomClient = tfNomClient.getText().trim();
+            double montant = Double.parseDouble(tfMontant.getText().trim());
+            Assurance assurance = new Assurance(nomClient, montant);
+
             TypeAssurance selectedType = cbTypeAssurance.getValue();
             assurance.setTypeAssurance(selectedType);
+
+            assurance.setNumero("ASS" + System.currentTimeMillis());
+
             assuranceRepository.insert(assurance);
+
             printAllAssurance();
             handleEffacer(event);
+
+        } catch (NumberFormatException e) {
+            System.out.println("Le montant doit être un nombre valide !");
         }
     }
 
     @FXML
     void handleModifier(ActionEvent event) {
-        if (selectedAssurance != null && validateFields()) {
+        if (selectedAssurance == null) {
+            System.out.println("Aucune assurance sélectionnée !");
+            return;
+        }
+
+        if (tfNomClient.getText() == null || tfNomClient.getText().trim().isEmpty() ||
+                tfMontant.getText() == null || tfMontant.getText().trim().isEmpty() ||
+                cbTypeAssurance.getValue() == null) {
+            System.out.println("Tous les champs sont obligatoires !");
+            return;
+        }
+
+        try {
             selectedAssurance.setNomClient(tfNomClient.getText().trim());
             selectedAssurance.setMontant(Double.parseDouble(tfMontant.getText().trim()));
-            TypeAssurance selectedType = cbTypeAssurance.getValue();
-            selectedAssurance.setTypeAssurance(selectedType);
+            selectedAssurance.setTypeAssurance(cbTypeAssurance.getValue());
+
             assuranceRepository.update(selectedAssurance);
+
             printAllAssurance();
             handleEffacer(event);
+
+        } catch (NumberFormatException e) {
+            System.out.println("Le montant doit être un nombre valide !");
         }
     }
+
 
     @FXML
     void handleSupprimer(ActionEvent event) {
